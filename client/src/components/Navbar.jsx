@@ -1,14 +1,21 @@
+// src/components/Navbar.jsx
 import { ShoppingCart, User, Search } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 import logo from "../assets/images/logo.png";
 
 function Navbar() {
+  const navigate = useNavigate();
+
   return (
     <nav className="bg-white shadow-md fixed w-full top-0 left-0 z-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
           {/* Logo / Brand */}
-          <div className="flex items-center space-x-2">
-             <img
+          <div
+            className="flex items-center space-x-2 cursor-pointer"
+            onClick={() => navigate("/")}
+          >
+            <img
               src={logo}
               alt="SDS Logo"
               className="w-10 h-10 rounded-full"
@@ -28,10 +35,17 @@ function Navbar() {
 
           {/* Right Icons */}
           <div className="flex items-center space-x-4">
-            <button className="hover:text-green-600 transition-colors">
+            <button
+              onClick={() => navigate("/login")}
+              className="hover:text-green-600 transition-colors"
+            >
               <User className="w-5 h-5" />
             </button>
-            <button className="hover:text-green-600 transition-colors">
+
+            <button
+              onClick={() => navigate("/cart")}
+              className="hover:text-green-600 transition-colors relative"
+            >
               <ShoppingCart className="w-5 h-5" />
             </button>
           </div>
