@@ -1,62 +1,53 @@
-// src/pages/SignupPage.jsx
-import { Link } from "react-router-dom";
-import { useState } from "react";
+import React, { useState } from "react";
+import { useAuth } from "../context/AuthContext";
 
-function SignupPage() {
-  const [form, setForm] = useState({ name: "", email: "", password: "" });
+const SignupPage = () => {
+  const { signup } = useAuth();
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
 
-  const handleSubmit = (e) => {
+  const handleSignup = (e) => {
     e.preventDefault();
-    alert("Signup successful! Redirecting to login...");
+    signup(name, email, password);
   };
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100">
-      <div className="bg-white p-8 rounded-lg shadow-md w-80">
-        <h2 className="text-2xl font-semibold text-center mb-6 text-green-700">
-          Create Account
-        </h2>
-        <form onSubmit={handleSubmit}>
+    <div className="flex flex-col items-center justify-center h-screen bg-gray-100">
+      <div className="bg-white p-8 rounded-2xl shadow-md w-96">
+        <h2 className="text-2xl font-semibold mb-4 text-center">Create Account</h2>
+        <form onSubmit={handleSignup}>
           <input
             type="text"
-            placeholder="Full Name"
-            value={form.name}
-            onChange={(e) => setForm({ ...form, name: e.target.value })}
-            className="w-full mb-4 p-2 border rounded"
-            required
+            placeholder="Name"
+            className="border p-2 w-full mb-3 rounded"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
           />
           <input
             type="email"
             placeholder="Email"
-            value={form.email}
-            onChange={(e) => setForm({ ...form, email: e.target.value })}
-            className="w-full mb-4 p-2 border rounded"
-            required
+            className="border p-2 w-full mb-3 rounded"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
           />
           <input
             type="password"
             placeholder="Password"
-            value={form.password}
-            onChange={(e) => setForm({ ...form, password: e.target.value })}
-            className="w-full mb-4 p-2 border rounded"
-            required
+            className="border p-2 w-full mb-3 rounded"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
           />
           <button
             type="submit"
-            className="w-full bg-green-600 text-white py-2 rounded hover:bg-green-700"
+            className="bg-green-600 text-white w-full py-2 rounded hover:bg-green-700"
           >
             Sign Up
           </button>
         </form>
-        <p className="text-center mt-4 text-sm">
-          Already have an account?{" "}
-          <Link to="/login" className="text-green-600 hover:underline">
-            Login
-          </Link>
-        </p>
       </div>
     </div>
   );
-}
+};
 
 export default SignupPage;
