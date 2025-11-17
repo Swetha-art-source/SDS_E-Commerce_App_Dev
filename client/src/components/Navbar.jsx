@@ -1,55 +1,62 @@
-// src/components/Navbar.jsx
-import { ShoppingCart, User, Search } from "lucide-react";
-import { useNavigate } from "react-router-dom";
-import logo from "../assets/images/logo.png";
+import { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { User, ShoppingCart } from "lucide-react";
 
 function Navbar() {
+  const [openDropdown, setOpenDropdown] = useState(false);
   const navigate = useNavigate();
 
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    navigate("/login");
+  };
+
   return (
-    <nav className="bg-white shadow-md fixed w-full top-0 left-0 z-50">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between items-center h-16">
-          {/* Logo / Brand */}
-          <div
-            className="flex items-center space-x-2 cursor-pointer"
-            onClick={() => navigate("/")}
-          >
-            <img
-              src={logo}
-              alt="SDS Logo"
-              className="w-10 h-10 rounded-full"
-            />
-            <h1 className="text-2xl font-bold text-green-600">SDS Creative</h1>
-          </div>
+    <nav className="flex items-center justify-between px-8 py-4 shadow bg-white">
+      {/* Logo */}
+      <Link to="/" className="text-2xl font-bold text-green-600">
+        SDS Creative
+      </Link>
 
-          {/* Search Bar */}
-          <div className="hidden md:flex items-center bg-gray-100 rounded-md px-3 py-1 w-1/3">
-            <Search className="w-5 h-5 text-gray-500" />
-            <input
-              type="text"
-              placeholder="Search products..."
-              className="bg-transparent outline-none px-2 w-full text-sm"
-            />
-          </div>
+      {/* Search Bar */}
+      <input
+        type="text"
+        placeholder="Search products..."
+        className="border px-4 py-2 w-96 rounded-full bg-gray-100 outline-none"
+      />
 
-          {/* Right Icons */}
-          <div className="flex items-center space-x-4">
-            <button
-              onClick={() => navigate("/login")}
-              className="hover:text-green-600 transition-colors"
+      {/* Right Icons */}
+      <div className="flex items-center gap-6 relative">
+
+        {/* User Icon */}
+        <button onClick={() => setOpenDropdown(!openDropdown)}>
+          <User size={24} className="cursor-pointer" />
+        </button>
+
+        {/* Dropdown Menu */}
+        {openDropdown && (
+          <div className="absolute right-0 top-10 bg-white shadow-md w-40 rounded-md p-2 border z-50">
+            <Link
+              to="/profile"
+              className="block p-2 hover:bg-gray-100 rounded"
+              onClick={() => setOpenDropdown(false)}
             >
-              <User className="w-5 h-5" />
-            </button>
+              User Profile
+            </Link>
 
             <button
-              onClick={() => navigate("/cart")}
-              className="hover:text-green-600 transition-colors relative"
+              className="w-full text-left p-2 hover:bg-gray-100 rounded text-red-600"
+              onClick={handleLogout}
             >
-              <ShoppingCart className="w-5 h-5" />
+              Logout
             </button>
           </div>
-        </div>
+        )}
+
+        {/* Cart Icon */}
+        <Link to="/cart">
+          <ShoppingCart size={24} className="cursor-pointer" />
+        </Link>
       </div>
     </nav>
   );

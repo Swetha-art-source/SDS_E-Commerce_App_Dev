@@ -237,4 +237,4 @@ Ability to update status.
 - Consistent design (Tailwind utility classes)
 - Mock data displayed correctly
 - Static forms ready for backend integration in Phase 3
- 
+  

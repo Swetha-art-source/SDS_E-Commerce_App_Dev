@@ -1,15 +1,16 @@
 // src/components/PrivateRoute.jsx
+import React from "react";
 import { Navigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 
-const PrivateRoute = ({ children, allowedRoles }) => {
-  const { user } = useAuth();
+const PrivateRoute = ({ children, requireAdmin = false }) => {
+  const { user, isGuest } = useAuth();
 
-  if (!user) {
-    return <Navigate to="/" replace />;
+  if (!user && !isGuest) {
+    return <Navigate to="/login" replace />;
   }
 
-  if (allowedRoles && !allowedRoles.includes(user.role)) {
+  if (requireAdmin && user?.role !== "admin") {
     return <Navigate to="/home" replace />;
   }
 

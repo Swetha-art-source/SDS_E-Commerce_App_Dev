@@ -1,48 +1,58 @@
-// src/App.jsx
-import { Routes, Route } from "react-router-dom";
-import Layout from "./components/layout/MainLayout";
+import { Routes, Route, Navigate } from "react-router-dom";
+import MainLayout from "./components/layout/MainLayout";
+
 import HomePage from "./pages/HomePage";
-import LoginPage from "./pages/LoginPage";
-import SignupPage from "./pages/SignupPage";
 import ProductDetailsPage from "./pages/ProductDetailsPage";
 import CartPage from "./pages/CartPage";
-import GuestCheckout from "./pages/GuestCheckout";
-import Checkout from "./pages/CheckoutPage";
-import PrivateRoute from "./components/PrivateRoute";
-import AdminDashboard from "./pages/AdminDashboardPage";
+import UserProfile from "./pages/UserProfile";
+
+import LoginPage from "./pages/LoginPage";
+import SignupPage from "./pages/SignupPage";
 
 function App() {
   return (
-    <Layout>
-      <Routes>
-        <Route path="/" element={<LoginPage />} />
-        <Route path="/home" element={<HomePage />} />
-        <Route path="/signup" element={<SignupPage />} />
-        <Route path="/product/:id" element={<ProductDetailsPage />} />
-        <Route path="/cart" element={<CartPage />} />
-        <Route path="/guest-checkout" element={<GuestCheckout />} />
+    <Routes>
 
-        {/* ✅ Protected User Checkout */}
-        <Route
-          path="/checkout"
-          element={
-            <PrivateRoute allowedRoles={["user"]}>
-              <Checkout />
-            </PrivateRoute>
-          }
-        />
+      {/* Redirect root to login */}
+      <Route path="/" element={<Navigate to="/login" replace />} />
 
-        {/* ✅ Protected Admin Dashboard */}
-        <Route
-          path="/admin"
-          element={
-            <PrivateRoute allowedRoles={["admin"]}>
-              <AdminDashboard />
-            </PrivateRoute>
-          }
-        />
-      </Routes>
-    </Layout>
+      {/* Pages WITHOUT Navbar */}
+      <Route path="/login" element={<LoginPage />} />
+      <Route path="/signup" element={<SignupPage />} />
+
+      {/* Pages WITH Navbar */}
+      <Route 
+        path="/home"
+        element={
+          <MainLayout>
+            <HomePage />
+          </MainLayout>
+        }
+      />
+
+      <Route
+        path="/product/:id"
+        element={
+          <MainLayout>
+            <ProductDetailsPage />
+          </MainLayout>
+        }
+      />
+
+      <Route
+        path="/cart"
+        element={
+          <MainLayout>
+            <CartPage />
+          </MainLayout>
+        }
+      />
+
+      <Route path="/profile" element={<UserProfile />} />
+      {/* Catch-all route to avoid crashes */}
+      <Route path="*" element={<Navigate to="/login" replace />} />
+
+    </Routes>
   );
 }
 

@@ -1,6 +1,7 @@
 // src/context/AuthContext.jsx
-import React, { createContext, useContext, useState } from "react";
+import React, { createContext, useContext, useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import axiosInstance from "../api/axiosInstance"; // <- use axiosInstance
 
 const AuthContext = createContext();
 
@@ -9,30 +10,60 @@ export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [isGuest, setIsGuest] = useState(false);
 
-  const login = (email, password) => {
-    // ✅ Fixed admin credentials
-    if (email === "admin@shop.com" && password === "admin123") {
-      const adminUser = { email, role: "admin" };
-      setUser(adminUser);
-      navigate("/admin");
-      return;
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (token) {
+      const decoded = parseJwt(token);
+      setUser({ email: decoded.email, role: decoded.role, token });
     }
+  }, []);
 
-    // ✅ Normal user credentials (for example only)
-    if (email && password) {
-      const normalUser = { email, role: "user" };
-      setUser(normalUser);
+  const signup = async (name, email, password) => {
+    try {
+      const res = await axiosInstance.post("/api/auth/signup", {
+        name,
+        email,
+        password,
+      });
+
+      const newUser = res.data.user;
+      setUser(newUser);
       navigate("/home");
-      return;
+    } catch (err) {
+      console.error(err);
+      alert(err.response?.data?.message || "Signup failed!");
     }
+  };
 
-    alert("Invalid credentials!");
+  const login = async (email, password) => {
+    try {
+      const res = await axiosInstance.post("/api/auth/login", {
+        email,
+        password,
+      });
+
+      const token = res.data.token;
+      if (!token) throw new Error("No token in response");
+
+      const decoded = parseJwt(token);
+      const userData = { email: decoded.email, role: decoded.role, token };
+
+      localStorage.setItem("token", token); // saved for interceptor
+      setUser(userData);
+
+      if (decoded.role === "admin") navigate("/admin");
+      else navigate("/home");
+    } catch (err) {
+      console.error(err);
+      alert(err.response?.data?.message || err.message || "Login failed!");
+    }
   };
 
   const logout = () => {
+    localStorage.removeItem("token");
     setUser(null);
     setIsGuest(false);
-    navigate("/");
+    navigate("/login");
   };
 
   const continueAsGuest = () => {
@@ -41,8 +72,25 @@ export const AuthProvider = ({ children }) => {
     navigate("/home");
   };
 
+  const parseJwt = (token) => {
+    try {
+      return JSON.parse(atob(token.split(".")[1]));
+    } catch (err) {
+      return {};
+    }
+  };
+
   return (
-    <AuthContext.Provider value={{ user, isGuest, login, logout, continueAsGuest }}>
+    <AuthContext.Provider
+      value={{
+        user,
+        isGuest,
+        signup,
+        login,
+        logout,
+        continueAsGuest,
+      }}
+    >
       {children}
     </AuthContext.Provider>
   );

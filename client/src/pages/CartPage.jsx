@@ -5,26 +5,36 @@ import { useCart } from "../context/CartContext";
 
 const CartPage = () => {
   const { cart, removeFromCart, updateQuantity, clearCart } = useCart();
-  const { isGuest } = useAuth();
+  const { user, isGuest } = useAuth();
   const navigate = useNavigate();
 
-  // Calculate total
+  // ✅ Calculate total
   const totalAmount = cart.reduce(
     (acc, item) => acc + item.price * item.quantity,
     0
   );
 
-  // ✅ Handle checkout logic
+  // ✅ Checkout Logic
   const handleCheckout = () => {
-    if (isGuest) {
-      alert("Please sign up to proceed with checkout!");
+    // If guest → redirect to signup
+    if (isGuest || !user) {
+      alert("Please sign up or log in to proceed with checkout!");
       navigate("/signup");
-    } else {
-      navigate("/checkout");
+      return;
     }
+
+    // If admin → show special message
+    if (user?.role === "admin") {
+      alert("Admin checkout is not applicable — viewing as admin!");
+      navigate("/admin");
+      return;
+    }
+
+    // If authorized user → go to checkout
+    navigate("/checkout");
   };
 
-  // ✅ Empty cart case
+  // ✅ Empty Cart Case
   if (!cart || cart.length === 0) {
     return (
       <div className="text-center py-24">
@@ -44,10 +54,10 @@ const CartPage = () => {
     );
   }
 
-  // ✅ Main cart layout
+  // ✅ Main Cart Layout
   return (
     <div className="max-w-5xl mx-auto p-6 mt-8 bg-white rounded-xl shadow-lg border border-gray-100">
-      {/* 🔙 Back Button */}
+      {/* Back Button */}
       <button
         onClick={() => navigate("/home")}
         className="mb-6 px-4 py-2 bg-gray-100 hover:bg-gray-200 rounded text-gray-700 font-medium transition"
@@ -134,7 +144,7 @@ const CartPage = () => {
             Clear Cart
           </button>
 
-          {/* ✅ Checkout button with auth check */}
+          {/* Checkout Button */}
           <button
             onClick={handleCheckout}
             className="bg-green-600 text-white px-6 py-2 rounded-lg shadow hover:bg-green-700 transition"

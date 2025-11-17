@@ -1,6 +1,7 @@
 // src/pages/ProductDetailsPage.jsx
 import { useParams, useNavigate } from "react-router-dom";
-import products from "../data/products";
+import { useEffect, useState } from "react";
+import axios from "axios";
 import { useCart } from "../context/CartContext";
 
 function ProductDetailsPage() {
@@ -8,7 +9,29 @@ function ProductDetailsPage() {
   const navigate = useNavigate();
   const { addToCart } = useCart();
 
-  const product = products.find((p) => p.id === parseInt(id));
+  const [product, setProduct] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchProduct = async () => {
+      try {
+        const res = await axios.get(`http://localhost:5000/api/products/${id}`);
+        setProduct(res.data);
+      } catch (error) {
+        console.error("Error fetching product details:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchProduct();
+  }, [id]);
+
+  if (loading) {
+    return (
+      <div className="text-center py-20 text-gray-600 text-lg">Loading...</div>
+    );
+  }
 
   if (!product) {
     return (
@@ -28,14 +51,16 @@ function ProductDetailsPage() {
 
   return (
     <div className="max-w-5xl mx-auto p-6 mt-6 bg-white rounded-lg shadow-md">
-         {/* ✅ Back Button */}
+      {/* ✅ Back Button */}
       <button
-        onClick={() => navigate("/")}
+        onClick={() => navigate("/home")}
         className="mb-6 px-4 py-2 bg-gray-200 hover:bg-gray-300 rounded text-gray-700 font-medium"
       >
         ← Back to Products
       </button>
+
       <div className="flex flex-col md:flex-row gap-8">
+        {/* Product Image */}
         <div className="flex-1">
           <img
             src={product.image}
@@ -44,6 +69,7 @@ function ProductDetailsPage() {
           />
         </div>
 
+        {/* Product Info */}
         <div className="flex-1 flex flex-col justify-center">
           <h1 className="text-3xl font-semibold text-green-700 mb-3">
             {product.name}
