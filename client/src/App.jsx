@@ -8,6 +8,7 @@ import UserProfile from "./pages/UserProfile";
 
 import LoginPage from "./pages/LoginPage";
 import SignupPage from "./pages/SignupPage";
+import ChangePasswordPage from "./pages/ChangePasswordPage";
 
 function App() {
   return (
@@ -51,6 +52,8 @@ function App() {
       <Route path="/profile" element={<UserProfile />} />
       {/* Catch-all route to avoid crashes */}
       <Route path="*" element={<Navigate to="/login" replace />} />
+
+      <Route path="/change-password" element={<ChangePasswordPage />} />
 
     </Routes>
   );
