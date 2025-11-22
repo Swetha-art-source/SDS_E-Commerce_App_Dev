@@ -83,7 +83,7 @@ function UserProfile() {
     <div style={styles.pageContainer}>
       <div style={styles.card}>
         {/* Back Button */}
-        <button onClick={() => navigate("/")} style={styles.backBtn}>
+        <button onClick={() => navigate("/home")} style={styles.backBtn}>
           ← Back to Home
         </button>
 

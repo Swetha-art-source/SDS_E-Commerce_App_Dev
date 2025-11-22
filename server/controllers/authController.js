@@ -6,7 +6,7 @@ import jwt from "jsonwebtoken";
 // @route  POST /api/auth/signup
 export const registerUser = async (req, res) => {
   try {
-    const { name, email, password, role } = req.body;
+    const { name, email, password } = req.body;
 
     const existingUser = await User.findOne({ email });
     if (existingUser) {
@@ -15,15 +15,36 @@ export const registerUser = async (req, res) => {
 
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    // Default role is 'user' unless specified as 'admin'
+    // AUTO ROLE LOGIC
+    let assignedRole = "user";
+
+    if (
+      name.toLowerCase() === "admin" || 
+      email.toLowerCase() === "admin@gmail.com"
+    ) {
+      assignedRole = "admin";
+    }
+
     const user = await User.create({
       name,
       email,
       password: hashedPassword,
-      role: role || "user"
+      role: assignedRole,
     });
 
-    res.status(201).json({ message: "User registered successfully", user });
+    // Generate token
+    const token = jwt.sign(
+      { id: user._id, email: user.email, role: user.role },
+      process.env.JWT_SECRET,
+      { expiresIn: "1d" }
+    );
+
+    res.status(201).json({
+      message: "User registered successfully",
+      token,
+      user
+    });
+
   } catch (error) {
     res.status(500).json({ message: "Server error", error: error.message });
   }

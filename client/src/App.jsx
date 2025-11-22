@@ -10,6 +10,12 @@ import LoginPage from "./pages/LoginPage";
 import SignupPage from "./pages/SignupPage";
 import ChangePasswordPage from "./pages/ChangePasswordPage";
 
+import AdminDashboard from "./pages/AdminDashboardPage";
+import PrivateRoute from "./components/PrivateRoute";
+import AdminProductsListPage from "./pages/AdminProductsListPage";
+import AdminProductsPage from "./pages/AdminProductsPage";
+
+
 function App() {
   return (
     <Routes>
@@ -51,9 +57,25 @@ function App() {
 
       <Route path="/profile" element={<UserProfile />} />
       {/* Catch-all route to avoid crashes */}
-      <Route path="*" element={<Navigate to="/login" replace />} />
+
 
       <Route path="/change-password" element={<ChangePasswordPage />} />
+
+      {/* ADMIN ROUTE */}
+      <Route 
+        path="/admin"
+        element={
+          <PrivateRoute requireAdmin={true}>
+            <AdminDashboard />
+          </PrivateRoute>
+        }
+      />
+
+      <Route path="/admin/products-list" element={<AdminProductsListPage />} />
+
+      <Route path="/admin/products" element={<AdminProductsPage />} />
+
+      <Route path="*" element={<Navigate to="/login" replace />} />
 
     </Routes>
   );
