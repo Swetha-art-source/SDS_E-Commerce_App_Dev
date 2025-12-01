@@ -14,7 +14,7 @@ import AdminDashboard from "./pages/AdminDashboardPage";
 import PrivateRoute from "./components/PrivateRoute";
 import AdminProductsListPage from "./pages/AdminProductsListPage";
 import AdminProductsPage from "./pages/AdminProductsPage";
-
+import AdminProductEditPage from "./pages/AdminProductEditPage";
 
 function App() {
   return (
@@ -56,13 +56,12 @@ function App() {
       />
 
       <Route path="/profile" element={<UserProfile />} />
-      {/* Catch-all route to avoid crashes */}
-
-
       <Route path="/change-password" element={<ChangePasswordPage />} />
 
-      {/* ADMIN ROUTE */}
-      <Route 
+      {/* ============================
+           ADMIN ROUTES (PROTECTED)
+         ============================ */}
+      <Route
         path="/admin"
         element={
           <PrivateRoute requireAdmin={true}>
@@ -71,10 +70,35 @@ function App() {
         }
       />
 
-      <Route path="/admin/products-list" element={<AdminProductsListPage />} />
+      <Route
+        path="/admin/products-list"
+        element={
+          <PrivateRoute requireAdmin={true}>
+            <AdminProductsListPage />
+          </PrivateRoute>
+        }
+      />
 
-      <Route path="/admin/products" element={<AdminProductsPage />} />
+      <Route
+        path="/admin/products"
+        element={
+          <PrivateRoute requireAdmin={true}>
+            <AdminProductsPage />
+          </PrivateRoute>
+        }
+      />
 
+      {/* ✅ EDIT PRODUCT ROUTE */}
+      <Route
+        path="/admin/edit-product/:id"
+        element={
+          <PrivateRoute requireAdmin={true}>
+            <AdminProductEditPage />
+          </PrivateRoute>
+        }
+      />
+
+      {/* Fallback for invalid routes */}
       <Route path="*" element={<Navigate to="/login" replace />} />
 
     </Routes>
