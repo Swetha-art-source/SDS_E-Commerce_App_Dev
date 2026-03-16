@@ -52,12 +52,17 @@ const LoginPage = () => {
           Continue as Guest
         </button>
 
-        <p className="mt-4 text-center text-sm">
-          New user?{" "}
-          <Link to="/signup" className="text-blue-600 underline">
-            Sign up
+        <div className="mt-4 flex flex-col items-center space-y-2 text-sm">
+          <Link to="/forgot-password" className="text-blue-600 hover:underline">
+            Forgot Password?
           </Link>
-        </p>
+          <p>
+            New user?{" "}
+            <Link to="/signup" className="text-blue-600 hover:underline">
+              Sign up
+            </Link>
+          </p>
+        </div>
       </div>
     </div>
   );

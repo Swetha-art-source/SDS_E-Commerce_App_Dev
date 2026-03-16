@@ -8,8 +8,8 @@ import UserProfile from "./pages/UserProfile";
 
 import LoginPage from "./pages/LoginPage";
 import SignupPage from "./pages/SignupPage";
+import ForgotPasswordPage from "./pages/ForgotPasswordPage";
 import ChangePasswordPage from "./pages/ChangePasswordPage";
-
 import AdminDashboard from "./pages/AdminDashboardPage";
 import PrivateRoute from "./components/PrivateRoute";
 import AdminProductsListPage from "./pages/AdminProductsListPage";
@@ -26,6 +26,7 @@ function App() {
       {/* Pages WITHOUT Navbar */}
       <Route path="/login" element={<LoginPage />} />
       <Route path="/signup" element={<SignupPage />} />
+      <Route path="/forgot-password" element={<ForgotPasswordPage />} />
 
       {/* Pages WITH Navbar */}
       <Route 
